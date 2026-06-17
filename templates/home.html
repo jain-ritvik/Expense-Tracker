@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PySpend</title>
+
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+     <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        body{
+            background-color:grey;
+        }
+
+        .sidebar{
+            background-color:darkgray;
+            border-right:1px solid #dee2e6;
+        }
+
+        .stat-card{
+            border:none;
+            border-radius:15px;
+            box-shadow:0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .chart-box{
+            height:450px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- Sidebar -->
+        <div class="col-lg-2 col-md-3 sidebar min-vh-100 p-4">
+
+            <h3 class="fw-bold text-primary mb-5">
+                <i class="bi bi-bank2"></i> PySpend
+            </h3>
+
+            <div class="d-flex flex-column gap-3">
+
+                <a href="#" class="text-decoration-none text-dark">
+                   <i class="bi bi-menu-app"></i> Dashboard
+                </a>
+
+                <a href="#" class="text-decoration-none text-dark">
+                    <i class="bi bi-list-ul"></i> Transactions
+                </a>
+
+                <a href="#" class="text-decoration-none text-dark">
+                   <i class="bi bi-pie-chart"></i> Analysis
+                </a>
+
+                <a href="#" class="text-decoration-none text-dark">
+                    <i class="bi bi-check2-circle"></i> Budget
+                </a>
+
+                <a href="#" class="text-decoration-none text-dark">
+                   <i class="bi bi-bell"></i> Alerts
+                </a>
+
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-lg-10 col-md-9 p-4">
+
+            <!-- Welcome Section -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+
+                <div>
+                    <h2 class="fw-bold">
+                        Welcome Back, {User} 👋
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        {{ current_monthYear }}
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- Budget Alert -->
+            <div class="card stat-card mb-4">
+                <div class="card-body">
+
+                    <h5 class="card-title">
+                        <i class="bi bi-exclamation-triangle"></i> Budget Alert
+                    </h5>
+
+                    <p>
+                        You have used
+                        <strong>{{ budgetPercentage }} %</strong>
+                        of your monthly budget.
+                    </p>
+
+                    <div class="progress" style="height:12px;">
+                        <div
+                            class="progress-bar bg-warning"
+                            style="width: {{ budgetPercentage }}%">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <form method="POST">
+
+<div class="row g-3 mb-4">
+
+    <div class="col-md-4">
+        <div class="card stat-card">
+            <div class="card-body">
+                <h6 class="text">Income</h6>
+
+                <input type="number" name="income" class="form-control" value="{{ income or '' }}"
+                    placeholder="Enter income">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card stat-card">
+            <div class="card-body">
+                <h6 class="text">Expenses</h6>
+
+                <input type="number" name="expenses" class="form-control" value="{{ expenses or '' }}"
+                    placeholder="Enter expenses">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card stat-card">
+            <div class="card-body">
+                <h6 class="text">Budget</h6>
+
+                <input type="number" name="budget" class="form-control" value="{{ budget or '' }}"
+                     placeholder="Enter budget">
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</form>
+
+<div class="modal fade" id="incomeModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5>Add Income</h5>
+            </div>
+
+            <div class="modal-body">
+
+                <form action="/add-income" method="POST">
+
+                    <input
+                        type="number"
+                        name="amount"
+                        class="form-control mb-3"
+                        placeholder="Income Amount">
+
+                    <select name="category" class="form-select mb-3">
+                        <option>Salary</option>
+                        <option>Freelance</option>
+                        <option>Business</option>
+                        <option>Other</option>
+                    </select>
+
+                    <button class="btn btn-success w-100">
+                        Save Income
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="expenseModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5>Add Expense</h5>
+            </div>
+
+            <div class="modal-body">
+
+                <form action="/add-expense" method="POST">
+
+                    <input
+                        type="number"
+                        name="amount"
+                        class="form-control mb-3"
+                        placeholder="Amount">
+
+                    <select
+                        name="category"
+                        class="form-select mb-3">
+
+                        <option>Food</option>
+                        <option>Transport</option>
+                        <option>Shopping</option>
+                        <option>Rent</option>
+                        <option>Utilities</option>
+                        <option>Healthcare</option>
+                        <option>Insurance</option>
+                        <option>Entertainment</option>
+                        <option>Other</option>
+
+                    </select>
+
+                <button class="btn btn-danger w-100">
+                    Save Expense
+                </button>    
+
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="budgetModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5>Set Budget</h5>
+            </div>
+
+            <div class="modal-body">
+
+                <form action="/setBudget" method="POST">
+
+                    <input
+                        type="number"
+                        name="amount"
+                        class="form-control mb-3"
+                        placeholder="Enter Budget">
+
+                    <button class="btn btn-primary w-100">
+                        Save Budget
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+    <button class="btn btn-success"  data-bs-toggle="modal" data-bs-target="#incomeModal">
+        Add Income
+    </button>
+
+    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#expenseModal">
+        Add Expense
+    </button>
+
+    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#budgetModal">
+        Set Budget
+    </button>
+
+            <!-- Charts Section -->
+            <div class="row g-4">
+
+                <div class="col-lg-8">
+                    <div class="card stat-card">
+                        <div class="card-body chart-box">
+
+                            <h5>
+                                Expenses by Category
+                            </h5>
+                            <canvas id="lineChart"></canvas>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="card stat-card">
+                        <div class="card-body chart-box">
+
+                            <h5>
+                                Expense Categories
+                            </h5>
+
+                            <div class="d-flex justify-content-center align-items-center h-100">
+                                <canvas id="pieChart"></canvas> 
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Recent Transactions -->
+            <div class="card stat-card mt-4">
+                <div class="card-body">
+
+                    <h5 class="mb-3">
+                        Recent Transactions
+                    </h5>
+
+                    <table class="table">
+
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Category</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                        {% for t in transactions %}
+                            <tr>
+                                <td>{{ t["created_at"][:10] }}</td>
+                                <td>{{ t["category"] }}</td>
+                                <td>₹{{ t["amount"] }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const categories = {{ category_data | default([]) | tojson }};
+
+const labels = categories.map(c => c.category);
+const values = categories.map(c => c.total);
+
+new Chart(document.getElementById("pieChart"), {
+    type: "pie",
+    data: {
+        labels: labels,
+        datasets: [{
+            data: values,
+            backgroundColor: [
+                "#ff6384",
+                "#36a2eb",
+                "#ffce56",
+                "#4bc0c0",
+                "#9966ff"
+            ]
+        }]
+    }
+});
+</script>
+<script>
+const monthly = {{ monthly_data | tojson }};
+
+const barLabels = categories.map(c => c.category);
+const totals = categories.map(c => c.total);
+
+new Chart(document.getElementById("lineChart"), {
+    type: "bar",
+    data: {
+        labels: barLabels,
+        datasets: [{
+            label: "Expenses by Category",
+            data: totals,
+            backgroundColor: [
+                "#ff6384",
+                "#36a2eb",
+                "#ffce56",
+                "#4bc0c0",
+                "#9966ff"
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false
+    }
+});
+</script>
+</body>
+</html>
