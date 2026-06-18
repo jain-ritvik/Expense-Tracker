@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect
 from datetime import datetime
 import sqlite3
+import database
 
 app = Flask(__name__)
 
@@ -65,8 +66,34 @@ def home():
 
     conn.close()
 
-    if budget:
+    if budget == 0:
+            budget_percentage = 0
+            budget_color = "secondary"
+            budget_message = "Set a budget first"
+
+    else:
         budget_percentage = min((expenses / budget) * 100, 100)
+        
+        if budget_percentage < 70:
+            budget_color = "success"
+            budget_message = "Healthy spending"
+        elif budget_percentage < 90:
+            budget_color = "warning"
+            budget_message = "Approaching budget limit"
+        else:
+            budget_color = "danger"
+            budget_message = "Budget exceeded"
+
+    savings = income - expenses
+
+    if expenses > income:
+        insight = "⚠️ Your expenses exceed your income."
+
+    elif budget_percentage > 90:
+        insight = "⚠️ You are close to your budget limit."
+
+    else:
+        insight = "✅ Your spending is under control."
 
     return render_template(
         "home.html",
@@ -77,7 +104,10 @@ def home():
         budgetPercentage=round(budget_percentage, 2),
         transactions=transactions,
         category_data=category_data,
-        monthly_data=monthly_data
+        monthly_data=monthly_data,
+        budgetColor=budget_color,
+        budgetMessage=budget_message,
+        insight = insight
     )
 
 @app.route('/add-income', methods=['POST'])
@@ -145,6 +175,61 @@ def setBudget():
     conn.commit()
     conn.close()
     
+    return redirect('/')
+
+@app.route('/edit/<int:id>')
+def edit_transaction(id):
+    conn = get_connection()
+
+    transaction = conn.execute(
+        """
+        SELECT *
+        FROM transactions
+        WHERE id=?
+        """,
+        (id,)
+    ).fetchone()
+
+    conn.close()
+
+    return render_template(
+        "edit.html",
+        transaction=transaction
+    )
+
+@app.route('/delete/<int:id>', methods = ['POST'])
+def delete_transaction(id):
+    conn = get_connection()
+
+    conn.execute(
+        "DELETE FROM transactions WHERE id=?",
+        (id,)
+    )
+
+    conn.commit()
+    conn.close()
+
+    return redirect('/')
+
+@app.route('/update/<int:id>', methods=['POST'])
+def update_transaction(id):
+    amount = request.form.get("amount")
+    category = request.form.get("category")
+
+    conn = get_connection()
+
+    conn.execute(
+        """
+        UPDATE transactions
+        SET amount=?, category=?
+        WHERE id=?
+        """,
+        (amount, category, id)
+    )
+
+    conn.commit()
+    conn.close()
+
     return redirect('/')
 
 if __name__ == "__main__":
