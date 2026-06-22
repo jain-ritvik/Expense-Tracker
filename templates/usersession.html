@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PySpend Authentication</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body class="bg-secondary">
+
+<div class="container vh-100 d-flex justify-content-center align-items-center">
+
+    <div class="card shadow-lg" style="width: 450px;">
+
+        <div class="card-body p-4">
+
+            <div class="text-center mb-4">
+                <h2 class="text-primary">
+                    <i class="bi bi-bank2"></i> PySpend
+                </h2>
+                <p class="text-muted">
+                    Smart Expense Tracker
+                </p>
+            </div>
+
+            <!-- Tabs -->
+            <ul class="nav nav-pills nav-fill mb-4">
+
+                <li class="nav-item">
+                    <button
+                        class="nav-link active"
+                        data-bs-toggle="pill"
+                        data-bs-target="#login">
+                        Login
+                    </button>
+                </li>
+
+                <li class="nav-item">
+                    <button
+                        class="nav-link"
+                        data-bs-toggle="pill"
+                        data-bs-target="#signup">
+                        Sign Up
+                    </button>
+                </li>
+
+            </ul>
+
+            <div class="tab-content">
+
+                <!-- LOGIN -->
+                <div class="tab-pane fade show active" id="login">
+
+                    <form action="/login" method="POST">
+
+                        <div class="mb-3">
+                            <input
+                                type="email"
+                                name="email"
+                                class="form-control"
+                                placeholder="Email"
+                                required>
+                        </div>
+
+                        <div class="mb-3">
+                            <input
+                                type="password"
+                                name="password"
+                                class="form-control"
+                                placeholder="Password"
+                                required>
+                        </div>
+
+                        <button class="btn btn-primary w-100">
+                            Login
+                        </button>
+
+                    </form>
+
+                </div>
+
+                <!-- SIGNUP -->
+                <div class="tab-pane fade" id="signup">
+
+                    <form action="/signup" method="POST">
+
+                        <div class="mb-3">
+                            <input
+                                type="text"
+                                name="name"
+                                class="form-control"
+                                placeholder="Full Name"
+                                required>
+                        </div>
+
+                        <div class="mb-3">
+                            <input
+                                type="email"
+                                name="email"
+                                class="form-control"
+                                placeholder="Email"
+                                required>
+                        </div>
+
+                        <div class="mb-3">
+                            <input
+                                type="password"
+                                name="password"
+                                class="form-control"
+                                placeholder="Password"
+                                required>
+                        </div>
+
+                        <div class="mb-3">
+                            <input
+                                type="password"
+                                name="confirm_password"
+                                class="form-control"
+                                placeholder="Confirm Password"
+                                required>
+                        </div>
+
+                        <button class="btn btn-success w-100">
+                            Create Account
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
