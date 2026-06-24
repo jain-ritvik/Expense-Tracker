@@ -7,7 +7,7 @@ app = Flask(__name__)
 app.secret_key = "your-secret-key"
 
 def get_connection():
-    conn = sqlite3.connect("spendly.db")
+    conn = sqlite3.connect("pyspend.db")
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -257,7 +257,7 @@ def edit_transaction(id):
 
     transaction = conn.execute(
         """
-        SELECT *
+        SELECT *    
         FROM transactions
         WHERE id=?
         AND user_id=?
@@ -287,7 +287,7 @@ def delete_transaction(id):
     conn.commit()
     conn.close()
 
-    return redirect('/')
+    return redirect(request.referrer or '/')
 
 @app.route('/update/<int:id>', methods=['POST'])
 def update_transaction(id):
@@ -312,6 +312,24 @@ def update_transaction(id):
     conn.close()
 
     return redirect('/')
+
+@app.route('/transactions', methods = ["POST", "GET"])
+def transactions():
+    user_id = session.get('user_id')
+
+    conn = sqlite3.connect('pyspend.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT * FROM transactions      
+        WHERE user_id = ? 
+        ORDER BY created_at DESC                 
+        ''' , (user_id,))
+
+    transactions = cursor.fetchall()
+    conn.close()
+
+    return render_template('transactions.html', transactions=transactions)
 
 # print(session.get("user_id"))
 

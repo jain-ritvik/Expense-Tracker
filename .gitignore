@@ -7,7 +7,7 @@ venv/
 env/
 
 # Database
-spendly.db
+pyspend.db
 
 # VS Code
 .vscode/

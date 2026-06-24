@@ -49,7 +49,7 @@
                    <i class="bi bi-menu-app"></i> Dashboard
                 </a>
 
-                <a href="#" class="text-decoration-none text-dark">
+                <a href="/transactions" class="text-decoration-none text-dark">
                     <i class="bi bi-list-ul"></i> Transactions
                 </a>
 
@@ -287,161 +287,121 @@
         Set Budget
     </button>
 
-            <!-- Charts Section -->
-            <div class="row g-4">
+    <!-- Charts Section -->
+        <div class="row g-4">
 
-                <div class="col-lg-8">
-                    <div class="card stat-card">
-                        <div class="card-body chart-box">
-
-                            <h5>
-                                Expenses by Category
-                            </h5>
-                            <canvas id="lineChart"></canvas>
+            <div class="col-lg-8">
+                <div class="card stat-card">
+                    <div class="card-body chart-box">
+                        <h5>
+                            Expenses by Category
+                        </h5>
+                        <canvas id="lineChart"></canvas>
                             
-                        </div>
                     </div>
                 </div>
-
-                <div class="col-lg-4">
-                    <div class="card stat-card">
-                        <div class="card-body chart-box">
-
-                            <h5>
-                                Expense Categories
-                            </h5>
-
-                            <div class="d-flex justify-content-center align-items-center h-100">
-                                <canvas id="pieChart"></canvas> 
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
             </div>
 
-            <!-- Recent Transactions -->
-            <div class="card stat-card mt-4">
-                <div class="card-body">
+            <div class="col-lg-4">
+                <div class="card stat-card">
+                    <div class="card-body chart-box">
+                        <h5>
+                            Expense Categories
+                        </h5>
 
-                    <h5 class="mb-3">
-                        Recent Transactions
-                    </h5>
+                        <div class="d-flex justify-content-center align-items-center h-100">
+                            <canvas id="pieChart"></canvas> 
+                        </div>
 
-                    <table class="table">
+                    </div>
+                </div>
+            </div>
 
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Category</th>
-                                <th>Amount</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
+        </div>
 
-                        <tbody>
+        <!-- Recent Transactions -->
+        <div class="card stat-card mt-4">
+            <div class="card-body">
+
+                <h5 class="mb-3">
+                    Recent Transactions
+                </h5>
+
+                <table class="table">
+
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Amount</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
                         {% for t in transactions %}
                             <tr>
                                 <td>{{ t["created_at"][:10] }}</td>
                                 <td>{{ t["category"] }}</td>
                                 <td>₹{{ t["amount"] }}</td>
-                                <td>
-                                    <button
-                                    class="btn btn-sm btn-primary"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#editModal{{ t['id'] }}">
-                                    Edit
-                                    </button>
-
-                                    <form action="/delete/{{ t['id'] }}"
-                                    method="POST"
-                                    style="display:inline;">
-                                    <button class="btn btn-sm btn-danger">
-                                    Delete
-                                    </button>
-                                    </form>
-                                </td>
+                                {% include "actionbuttons.html" %}
                             </tr>
-                            <!-- Edit Modal -->
-<div class="modal fade"
-     id="editModal{{ t['id'] }}"
-     tabindex="-1"
-     aria-hidden="true">
+                        
+                <!-- Edit Modal -->
+                    <div class="modal fade"
+                        id="editModal{{ t['id'] }}"
+                        tabindex="-1"
+                        aria-hidden="true">
 
-    <div class="modal-dialog">
-        <div class="modal-content">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
 
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    Edit Transaction
-                </h5>
+                                <div class="modal-header">
+                                    <h5 class="modal-title">
+                                    Edit Transaction
+                                    </h5>
 
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal">
-                </button>
-            </div>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"> </button>
+                                </div>
 
-            <div class="modal-body">
+                                <div class="modal-body">
 
-                <form action="/update/{{ t['id'] }}"
-                      method="POST">
+                                    <form action="/update/{{ t['id'] }}" method="POST">
 
-                    <div class="mb-3">
-                        <label class="form-label">
-                            Amount
-                        </label>
+                                        <div class="mb-3">
+                                            <label class="form-label">
+                                                Amount
+                                            </label>
 
-                        <input
-                            type="number"
-                            step="0.01"
-                            name="amount"
-                            class="form-control"
-                            value="{{ t['amount'] }}"
-                            required>
+                                            <input type="number" step="0.01" name="amount" class="form-control"
+                                                value="{{ t['amount'] }}" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">
+                                                Category
+                                            </label>
+
+                                            <input type="text" name="category" class="form-control" value="{{ t['category'] }}"
+                                                required>
+                                        </div>
+
+                                            <button type="submit" class="btn btn-primary w-100"> Update Transaction </button>
+
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">
-                            Category
-                        </label>
-
-                        <input
-                            type="text"
-                            name="category"
-                            class="form-control"
-                            value="{{ t['category'] }}"
-                            required>
-                    </div>
-
-                    <button
-                        type="submit"
-                        class="btn btn-primary w-100">
-                        Update Transaction
-                    </button>
-
-                </form>
-
+                    {% endfor %}
+                    </tbody>
+                </table>
             </div>
-
-        </div>
-    </div>
-
-</div>
-                        {% endfor %}
-                        </tbody>
-
-                    </table>
-
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-</div>
+        </div>        
+        
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>

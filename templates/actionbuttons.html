@@ -1,0 +1,9 @@
+<td>
+    <button
+    class = "btn btn-sm btn-primary" data-bs-toggle = "modal" data-bs-target="#editModal{{ t['id'] }}">
+    Edit
+    </button>
+    <form action="/delete/{{ t['id'] }}" method="POST" style="display:inline">
+        <button class="btn btn-sm btn-danger"> Delete </button>
+    </form>
+</td>

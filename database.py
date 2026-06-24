@@ -1,6 +1,6 @@
 import sqlite3
 
-conn = sqlite3.connect("spendly.db")
+conn = sqlite3.connect("pyspend.db")
 
 cursor = conn.cursor()
 
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS transactions (
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS budget (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
+    user_id INTEGER UNIQUE NOT NULL,
     amount REAL NOT NULL,
     FOREIGN KEY(user_id) REFERENCES users(id)
 )
