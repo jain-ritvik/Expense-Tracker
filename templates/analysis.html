@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="mb-4">Financial Analysis</h2>
+
+<!-- Summary Section -->
+<div class="row g-3 mb-4">
+
+    <div class="col-md-3">
+        <div class="card stat-card p-3">
+            <h6>Total Income</h6>
+            <h4>₹{{ income }}</h4>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card stat-card p-3">
+            <h6>Total Expenses</h6>
+            <h4>₹{{ expenses }}</h4>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card stat-card p-3">
+            <h6>Savings</h6>
+            <h4>₹{{ savings }}</h4>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card stat-card p-3">
+            <h6>Top Category</h6>
+            <h4>{{ top_category }}</h4>
+        </div>
+    </div>
+
+</div>
+
+<!-- Insight -->
+<div class="card stat-card p-3 mb-4">
+    <h5>Insight</h5>
+
+    <p>
+        You are spending the most on <b>{{ top_category }}</b> (₹{{ top_spend }}).
+    </p>
+
+    <p>
+        Your savings this month: <b>₹{{ savings }}</b>.
+    </p>
+
+    {% if savings < 0 %}
+        <div class="alert alert-danger">⚠️ You are overspending</div>
+    {% elif savings < 1000 %}
+        <div class="alert alert-warning">⚠️ Low savings</div>
+    {% else %}
+        <div class="alert alert-success">✅ Healthy savings</div>
+    {% endif %}
+</div>
+
+<!-- Chart -->
+<div class="card stat-card p-3">
+    <h5>Spending Breakdown</h5>
+    <canvas id="analysisChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const data = {{ category_data | tojson }};
+
+const labels = data.map(d => d.category);
+const values = data.map(d => d.total);
+
+new Chart(document.getElementById("analysisChart"), {
+    type: "bar",
+    data: {
+        labels: labels,
+        datasets: [{
+            label: "Expenses",
+            data: values,
+            backgroundColor: "#36a2eb"
+        }]
+    }
+});
+</script>
+
+{% endblock %}

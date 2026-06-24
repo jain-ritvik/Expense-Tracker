@@ -335,6 +335,51 @@ def transactions():
 def budget():
     return render_template("budget.html")
 
+@app.route('/analysis')
+def analysis():
+    if "user_id" not in session:
+        return redirect('/login')
+
+    conn = get_connection()
+
+    data = conn.execute('''
+                SELECT category, SUM(amount) as total
+                FROM transactions
+                WHERE user_id=? AND transaction_type='expense'
+                GROUP BY category
+                ORDER BY total desc
+            ''', (session['user_id'],)).fetchall()
+    
+    data = [dict(row) for row in data]
+
+    income = conn.execute('''
+                SELECT COALESCE(SUM(amount),0)
+                FROM transactions
+                WHERE user_id=? AND transaction_type='income'         
+                ''', (session['user_id'],)).fetchone()[0]
+    
+    expenses = conn.execute('''
+                    SELECT COALESCE(SUM(amount), 0)
+                    FROM transactions
+                            WHERE user_id=? AND transaction_type='expense'
+                    ''', (session['user_id'],)).fetchone()[0]
+    
+    conn.close()
+
+    top_category = data[0]["category"] if data else "None"
+    top_spend = data[0]["total"] if data else 0
+    savings = income - expenses
+
+    return render_template(
+       "analysis.html",
+       category_data=data,
+       income=income,
+       expenses=expenses,
+       savings=savings,
+       top_category=top_category,
+       top_spend=top_spend
+    )
+
 # print(session.get("user_id"))
 
 if __name__ == "__main__":
