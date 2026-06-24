@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="mb-4">Budget Page</h2>
+
+<div class="card stat-card p-3">
+    <h5>Set Your Budget</h5>
+
+    <form method="POST" action="/setBudget">
+        <input type="number" name="amount" class="form-control mb-3" placeholder="Enter Budget">
+
+        <button class="btn btn-primary w-100">
+            Save Budget
+        </button>
+    </form>
+</div>
+
+{% endblock %}

@@ -331,6 +331,10 @@ def transactions():
 
     return render_template('transactions.html', transactions=transactions)
 
+@app.route("/budget")
+def budget():
+    return render_template("budget.html")
+
 # print(session.get("user_id"))
 
 if __name__ == "__main__":
